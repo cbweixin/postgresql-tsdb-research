@@ -135,6 +135,19 @@ create table monitor2_2023_07
         for values from('2023-07-23 00:00:00+00') to ('2023-08-23 00:00:00+00');
 ```
 
+so we have 
+```sql
+test=# \dt+ monitor2*
+                                               List of relations
+ Schema |       Name       |       Type        |  Owner   | Persistence | Access method |  Size   | Description
+--------+------------------+-------------------+----------+-------------+---------------+---------+-------------
+ public | monitor2         | partitioned table | postgres | permanent   |               | 0 bytes |
+ public | monitor2_2023_05 | table             | postgres | permanent   | heap          | 168 MB  |
+ public | monitor2_2023_06 | table             | postgres | permanent   | heap          | 167 MB  |
+ public | monitor2_2023_07 | table             | postgres | permanent   | heap          | 5504 kB |
+(4 rows)
+```
+
 then generate data
 ```sql
 INSERT INTO monitor2
