@@ -4,6 +4,6 @@ docker run --name my-postgresql \
     -e POSTGRES_PASSWORD=root \
     -e POSTGRES_DB=test \
     -e POSTGRES_INITDB_WALDIR=/var/lib/postgresql/log \
-    -v /Users/xinwei/docker_data/postgresql/data:/var/ltb/postgresql/data \
-    -v /Users/xinwei/docker_data/postgresql/log:/var/lib/postgresql/log \
+    -v <host_path>:/var/ltb/postgresql/data \
+    -v <host_path>:/var/lib/postgresql/log \
     postgres
