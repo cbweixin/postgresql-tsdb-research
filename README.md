@@ -183,9 +183,7 @@ Planning Time: 0.102 ms
 Execution Time: 87.516 ms
 ```
 
-another cross partition query
-```sql
-explain analyze
+another cross partition query ```sql explain analyze
 select 
   * 
 from 
@@ -225,5 +223,53 @@ select pg_size_pretty(pg_table_size('monitor2_2023_06'));
 ```
 result: 168 MB
 
+
+## using pg_partman to automate partition process
+```sql
+SELECT partman.create_parent( 
+     p_parent_table => 'monitor',
+	 p_control => 'time',
+	 p_type => 'native',
+	 p_interval=> 'daily',
+     p_start_partition := '2023-06-01 00:00:00',
+	 p_premake => 3);
+```
+
+## run_maintenance_proc
+```sql
+CREATE EXTENSION pg_cron;
+
+UPDATE partman.part_config
+	SET infinite_time_partitions = true,
+	    retention = '3 days',
+	    retention_keep_table=true
+	WHERE parent_table = 'monitor';
+SELECT cron.schedule_in_database('monitor_job','@hourly', $$CALL partman.run_maintenance_proc()$$,'test');
+
+# update cron
+SELECT cron.alter_job(1,'30 2 * * *', $$CALL partman.run_maintenance_proc()$$,'test');
+```
+
+## sub-partition
+
+we have such an table already:
+```sql
+
+create table monitor2_2023_06
+    partition of monitor2
+        for values from('2023-06-23 00:00:00+00') to ('2023-07-23 00:00:00+00');
+
+```
+
+the can sub-partition this table by week
+
+```sql
+create table monitor2_2023_06_01
+    partition of monitor2_2023_06
+        for values from('2023-06-23 00:00:00+00') to ('2023-06-30 00:00:00+00');
+
+create table monitor2_2023_06_02
+    ....
+```
 
 
