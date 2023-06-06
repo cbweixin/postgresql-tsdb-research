@@ -183,7 +183,8 @@ Planning Time: 0.102 ms
 Execution Time: 87.516 ms
 ```
 
-another cross partition query ```sql explain analyze
+another cross partition query 
+```sql explain analyze
 select 
   * 
 from 
@@ -225,6 +226,7 @@ result: 168 MB
 
 
 ## using pg_partman to automate partition process
+
 ```sql
 SELECT partman.create_parent( 
      p_parent_table => 'monitor',
